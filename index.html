@@ -143,6 +143,17 @@
             gap: 0.5rem;
         }
 
+        .running-total {
+            background: var(--secondary-cream);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 2px solid var(--primary-sage);
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-forest);
+        }
+
         .form-group {
             margin: 1rem 0;
         }
@@ -290,6 +301,7 @@
             padding: 1rem;
             cursor: pointer;
             transition: all 0.3s;
+            background: white;
         }
 
         .space-card:hover {
@@ -300,6 +312,7 @@
         .space-card.selected {
             border-color: var(--primary-forest);
             background: var(--secondary-cream);
+            box-shadow: 0 5px 15px rgba(0, 82, 42, 0.2);
         }
 
         .space-card h3 {
@@ -319,6 +332,10 @@
 
         .headcount-input.show {
             display: block;
+        }
+
+        .headcount-input input {
+            margin-top: 0.5rem;
         }
 
         .event-date-section {
@@ -398,6 +415,19 @@
             margin-left: 1rem;
             padding: 0.25rem 0.5rem;
             font-size: 0.8rem;
+        }
+
+        .final-actions {
+            background: var(--primary-forest);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .final-actions h3 {
+            margin-bottom: 1rem;
         }
 
         .hidden {
@@ -535,10 +565,13 @@
                 </div>
                 
                 <div id="roomTableContainer"></div>
+                <div id="roomsRunningTotal" class="running-total hidden">
+                    <strong>Running Total: $<span id="roomsTotalAmount">0</span></strong>
+                </div>
                 
                 <div id="roomsActions" class="hidden">
                     <button class="btn btn-secondary" onclick="viewRoomsQuote()">View Quote</button>
-                    <button class="btn btn-primary" onclick="generateRoomsEmail()">Generate Email</button>
+                    <button class="btn btn-primary" id="roomsEmailBtn" onclick="generateRoomsEmail()">Generate Email</button>
                 </div>
             </div>
         </div>
@@ -563,46 +596,49 @@
                 <div id="eventDatesList" class="date-list hidden"></div>
                 
                 <div id="eventDatesContainer"></div>
+                <div id="eventsRunningTotal" class="running-total hidden">
+                    <strong>Event Running Total: $<span id="eventsTotalAmount">0</span></strong>
+                </div>
                 
                 <div id="eventAddonsSection" class="section hidden">
                     <h2>Event Add-ons (Optional)</h2>
                     <div class="addons-grid">
                         <div class="addon-item">
-                            <input type="checkbox" id="projector" value="350">
+                            <input type="checkbox" id="projector" value="350" onchange="updateEventsTotal()">
                             <label for="projector">Projector - $350</label>
                         </div>
                         <div class="addon-item">
-                            <input type="checkbox" id="screen" value="150">
+                            <input type="checkbox" id="screen" value="150" onchange="updateEventsTotal()">
                             <label for="screen">Screen - $150</label>
                         </div>
                         <div class="addon-item">
-                            <input type="checkbox" id="speakerSystem" value="150">
+                            <input type="checkbox" id="speakerSystem" value="150" onchange="updateEventsTotal()">
                             <label for="speakerSystem">Speaker System - $150</label>
                         </div>
                         <div class="addon-item">
-                            <input type="checkbox" id="monitor75" value="300">
+                            <input type="checkbox" id="monitor75" value="300" onchange="updateEventsTotal()">
                             <label for="monitor75">75" Portable Monitor - $300</label>
                         </div>
                         <div class="addon-item">
-                            <input type="checkbox" id="handheldMic" value="75">
+                            <input type="checkbox" id="handheldMic" value="75" onchange="updateEventsTotal()">
                             <label for="handheldMic">Handheld Microphone - $75</label>
                         </div>
                         <div class="addon-item">
-                            <input type="checkbox" id="lavalierMic" value="75">
+                            <input type="checkbox" id="lavalierMic" value="75" onchange="updateEventsTotal()">
                             <label for="lavalierMic">Lavalier Microphone - $75</label>
                         </div>
                         <div class="addon-item">
-                            <input type="checkbox" id="podium" value="50">
+                            <input type="checkbox" id="podium" value="50" onchange="updateEventsTotal()">
                             <label for="podium">Podium - $50</label>
                         </div>
                         <div class="addon-item">
-                            <input type="checkbox" id="executiveBlotter" value="25">
+                            <input type="checkbox" id="executiveBlotter" value="25" onchange="updateEventsTotal()">
                             <label for="executiveBlotter">Executive Blotter - $25</label>
                         </div>
                         <div class="addon-item special">
                             <input type="checkbox" id="avTechnician" value="150" onchange="toggleAVTechHours()">
                             <label for="avTechnician">AV Technician - $150/hr</label>
-                            <input type="number" id="avTechHours" min="1" placeholder="Hours" style="width: 80px; margin-left: 10px;" class="hidden">
+                            <input type="number" id="avTechHours" min="1" placeholder="Hours" style="width: 80px; margin-left: 10px;" class="hidden" onchange="updateEventsTotal()">
                         </div>
                         <div class="addon-item special">
                             <input type="checkbox" id="chefAttendant" value="250" onchange="toggleChefDates()">
@@ -619,9 +655,15 @@
                 
                 <div id="eventsActions" class="hidden">
                     <button class="btn btn-secondary" onclick="viewEventsQuote()">View Quote</button>
-                    <button class="btn btn-primary" onclick="generateEventsEmail()">Generate Email</button>
+                    <button class="btn btn-primary" id="eventsEmailBtn" onclick="generateEventsEmail()">Generate Email</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Final Actions for Combo -->
+        <div id="finalActions" class="final-actions hidden">
+            <h3>Generate Complete Quote</h3>
+            <button class="btn btn-primary" onclick="generateComboEmail()">Generate Combined Email</button>
         </div>
 
         <!-- Quote Display -->
@@ -678,6 +720,13 @@
         let eventDates = [];
         let selectedSpaces = {};
 
+        // Fixed date parsing to avoid timezone issues
+        function parseLocalDate(dateString) {
+            if (!dateString) return null;
+            const [year, month, day] = dateString.split('-').map(Number);
+            return new Date(year, month - 1, day); // month is 0-indexed in JS
+        }
+
         // Section management functions
         function clearRoomsSection() {
             document.getElementById('checkInDate').value = '';
@@ -685,7 +734,9 @@
             document.getElementById('roomTableContainer').innerHTML = '';
             document.getElementById('businessPatternAlert').classList.add('hidden');
             document.getElementById('roomsActions').classList.add('hidden');
+            document.getElementById('roomsRunningTotal').classList.add('hidden');
             document.getElementById('quoteDisplay').classList.add('hidden');
+            updateRoomsTotal();
         }
 
         function clearEventsSection() {
@@ -697,6 +748,7 @@
             document.getElementById('eventDatesContainer').innerHTML = '';
             document.getElementById('eventAddonsSection').classList.add('hidden');
             document.getElementById('eventsActions').classList.add('hidden');
+            document.getElementById('eventsRunningTotal').classList.add('hidden');
             document.getElementById('quoteDisplay').classList.add('hidden');
             
             // Clear all addon checkboxes
@@ -704,6 +756,7 @@
             document.getElementById('avTechHours').classList.add('hidden');
             document.getElementById('chefDatesContainer').classList.add('hidden');
             document.getElementById('coatCheckDatesContainer').classList.add('hidden');
+            updateEventsTotal();
         }
 
         function toggleRoomsSection() {
@@ -739,6 +792,7 @@
             // Hide all sections
             document.getElementById('roomsSection').classList.add('hidden');
             document.getElementById('eventsSection').classList.add('hidden');
+            document.getElementById('finalActions').classList.add('hidden');
             
             // Show relevant sections
             if (type === 'rooms' || type === 'combo') {
@@ -746,6 +800,20 @@
             }
             if (type === 'event' || type === 'combo') {
                 document.getElementById('eventsSection').classList.remove('hidden');
+            }
+            if (type === 'combo') {
+                document.getElementById('finalActions').classList.remove('hidden');
+                // Hide individual email buttons for combo
+                const roomsEmail = document.getElementById('roomsEmailBtn');
+                const eventsEmail = document.getElementById('eventsEmailBtn');
+                if (roomsEmail) roomsEmail.classList.add('hidden');
+                if (eventsEmail) eventsEmail.classList.add('hidden');
+            } else {
+                // Show individual email buttons for single sections
+                const roomsEmail = document.getElementById('roomsEmailBtn');
+                const eventsEmail = document.getElementById('eventsEmailBtn');
+                if (roomsEmail) roomsEmail.classList.remove('hidden');
+                if (eventsEmail) eventsEmail.classList.remove('hidden');
             }
             
             // Update button styles
@@ -777,6 +845,98 @@
             }
             
             return dates;
+        }
+
+        // Running totals functions
+        function updateRoomsTotal() {
+            const checkIn = document.getElementById('checkInDate').value;
+            const checkOut = document.getElementById('checkOutDate').value;
+            
+            if (!checkIn || !checkOut) {
+                document.getElementById('roomsRunningTotal').classList.add('hidden');
+                return;
+            }
+            
+            const checkInDate = parseLocalDate(checkIn);
+            const checkOutDate = parseLocalDate(checkOut);
+            const dates = getDatesBetween(checkInDate, checkOutDate);
+            
+            let totalCost = 0;
+            dates.forEach((date, index) => {
+                const rooms = parseFloat(document.getElementById(`rooms_${index}`)?.value) || 0;
+                const rate = parseFloat(document.getElementById(`rate_${index}`)?.value) || 0;
+                totalCost += rooms * rate;
+            });
+            
+            if (totalCost > 0) {
+                document.getElementById('roomsTotalAmount').textContent = totalCost.toLocaleString();
+                document.getElementById('roomsRunningTotal').classList.remove('hidden');
+            } else {
+                document.getElementById('roomsRunningTotal').classList.add('hidden');
+            }
+        }
+
+        function updateEventsTotal() {
+            let totalCost = 0;
+            
+            // Calculate space costs
+            Object.keys(selectedSpaces).forEach(spaceKey => {
+                const space = selectedSpaces[spaceKey];
+                const headcountInput = document.querySelector(`#headcount_${space.venueName.replace(/\s+/g, '_')}_${space.dateIndex} input`);
+                const headcount = headcountInput ? parseInt(headcountInput.value) || 0 : 0;
+                
+                if (headcount > 0) {
+                    const pricing = getVenuePricing(space.venueName, space.date, space.isBusinessHours);
+                    totalCost += pricing.roomRental + pricing.fnbMinimum;
+                }
+            });
+            
+            // Add addon costs
+            const addons = [
+                { id: 'projector', price: 350 },
+                { id: 'screen', price: 150 },
+                { id: 'speakerSystem', price: 150 },
+                { id: 'monitor75', price: 300 },
+                { id: 'handheldMic', price: 75 },
+                { id: 'lavalierMic', price: 75 },
+                { id: 'podium', price: 50 },
+                { id: 'executiveBlotter', price: 25 }
+            ];
+            
+            addons.forEach(addon => {
+                if (document.getElementById(addon.id)?.checked) {
+                    totalCost += addon.price;
+                }
+            });
+            
+            // AV Technician
+            if (document.getElementById('avTechnician')?.checked) {
+                const hours = parseInt(document.getElementById('avTechHours').value) || 0;
+                totalCost += hours * 150;
+            }
+            
+            // Chef and Coat Check (count selected dates)
+            if (document.getElementById('chefAttendant')?.checked) {
+                const selectedDates = document.querySelectorAll('[id^="chef_date_"]:checked').length;
+                totalCost += selectedDates * 250;
+            }
+            
+            if (document.getElementById('coatCheckAttendant')?.checked) {
+                const selectedDates = document.querySelectorAll('[id^="coat_date_"]:checked').length;
+                totalCost += selectedDates * 175;
+            }
+            
+            // Apply multi-day discount if applicable
+            if (eventDates.length >= 3) {
+                totalCost *= 0.75; // 25% discount
+            }
+            
+            if (totalCost > 0 || eventDates.length > 0) {
+                document.getElementById('eventsTotalAmount').textContent = totalCost.toLocaleString();
+                document.getElementById('eventsRunningTotal').classList.remove('hidden');
+            } else {
+                document.getElementById('eventsRunningTotal').classList.add('hidden');
+            }
         }
 
         // Pricing logic
@@ -875,8 +1035,8 @@
             const checkOut = document.getElementById('checkOutDate').value;
             
             if (checkIn && checkOut) {
-                const checkInDate = new Date(checkIn);
-                const checkOutDate = new Date(checkOut);
+                const checkInDate = parseLocalDate(checkIn);
+                const checkOutDate = parseLocalDate(checkOut);
                 
                 if (checkBusinessPattern(checkInDate, checkOutDate)) {
                     document.getElementById('businessPatternAlert').classList.remove('hidden');
@@ -884,6 +1044,7 @@
                     document.getElementById('businessPatternAlert').classList.add('hidden');
                 }
             }
+            updateRoomsTotal();
         }
 
         function generateRoomTable() {
@@ -895,8 +1056,8 @@
                 return;
             }
             
-            const checkInDate = new Date(checkIn);
-            const checkOutDate = new Date(checkOut);
+            const checkInDate = parseLocalDate(checkIn);
+            const checkOutDate = parseLocalDate(checkOut);
             const dates = getDatesBetween(checkInDate, checkOutDate);
             
             if (dates.length === 0) {
@@ -916,19 +1077,20 @@
             tableHTML += '<tr><td><strong>Rooms Needed</strong></td>';
             
             dates.forEach((date, index) => {
-                tableHTML += `<td><input type="number" id="rooms_${index}" min="0" placeholder="0"></td>`;
+                tableHTML += `<td><input type="number" id="rooms_${index}" min="0" placeholder="0" onchange="updateRoomsTotal()"></td>`;
             });
             
             tableHTML += '</tr><tr><td><strong>Agreed Rate</strong></td>';
             
             dates.forEach((date, index) => {
-                tableHTML += `<td><input type="number" id="rate_${index}" min="0" placeholder="$0" step="0.01"></td>`;
+                tableHTML += `<td><input type="number" id="rate_${index}" min="0" placeholder="$0" step="0.01" onchange="updateRoomsTotal()"></td>`;
             });
             
             tableHTML += '</tr></tbody></table>';
             
             document.getElementById('roomTableContainer').innerHTML = tableHTML;
             document.getElementById('roomsActions').classList.remove('hidden');
+            updateRoomsTotal();
         }
 
         // Event section functions
@@ -941,7 +1103,7 @@
                 return;
             }
             
-            const eventDate = new Date(date);
+            const eventDate = parseLocalDate(date);
             if (!eventDates.some(d => d.getTime() === eventDate.getTime())) {
                 eventDates.push(eventDate);
                 updateEventDatesDisplay();
@@ -1022,7 +1184,9 @@
                 document.getElementById('eventAddonsSection').classList.add('hidden');
                 document.getElementById('eventsActions').classList.add('hidden');
                 document.getElementById('eventDatesContainer').innerHTML = '';
+                document.getElementById('eventsRunningTotal').classList.add('hidden');
             }
+            updateEventsTotal();
         }
 
         function generateEventDateSections() {
@@ -1056,6 +1220,7 @@
                 // Generate spaces for this date
                 generateSpacesForDate(date, dateIndex);
             });
+            updateEventsTotal();
         }
 
         function generateSpacesForDate(date, dateIndex) {
@@ -1074,7 +1239,7 @@
                     </div>
                     <div class="headcount-input" id="headcount_${venueName.replace(/\s+/g, '_')}_${dateIndex}">
                         <label>Headcount:</label>
-                        <input type="number" min="1" placeholder="Enter headcount">
+                        <input type="number" min="1" placeholder="Enter headcount" onclick="event.stopPropagation()" onchange="updateEventsTotal()">
                     </div>
                 </div>`;
             });
@@ -1095,7 +1260,7 @@
                     </div>
                     <div class="headcount-input" id="headcount_${venueName.replace(/\s+/g, '_')}_${dateIndex}">
                         <label>Headcount:</label>
-                        <input type="number" min="1" placeholder="Enter headcount">
+                        <input type="number" min="1" placeholder="Enter headcount" onclick="event.stopPropagation()" onchange="updateEventsTotal()">
                     </div>
                 </div>`;
             });
@@ -1115,14 +1280,16 @@
             } else {
                 card.classList.add('selected');
                 headcountDiv.classList.add('show');
+                const sortedDates = [...eventDates].sort((a, b) => a - b);
                 selectedSpaces[spaceKey] = {
                     venueName: venueName,
                     dateIndex: dateIndex,
-                    date: eventDates.find((d, i) => i === dateIndex),
+                    date: sortedDates[dateIndex],
                     isBusinessHours: false,
                     headcount: 0
                 };
             }
+            updateEventsTotal();
         }
 
         function toggleBusinessHours(venueName, dateIndex) {
@@ -1133,6 +1300,7 @@
             if (selectedSpaces[spaceKey]) {
                 selectedSpaces[spaceKey].isBusinessHours = !isCurrentlyBusiness;
                 toggleBtn.textContent = isCurrentlyBusiness ? 'Non-Business' : 'Business';
+                updateEventsTotal();
             }
         }
 
@@ -1160,6 +1328,7 @@
                 hoursInput.classList.add('hidden');
                 hoursInput.value = '';
             }
+            updateEventsTotal();
         }
 
         function toggleChefDates() {
@@ -1171,6 +1340,7 @@
             } else {
                 container.classList.add('hidden');
             }
+            updateEventsTotal();
         }
 
         function toggleCoatCheckDates() {
@@ -1182,6 +1352,7 @@
             } else {
                 container.classList.add('hidden');
             }
+            updateEventsTotal();
         }
 
         function updateServiceDateCheckboxes() {
@@ -1192,7 +1363,7 @@
             eventDates.sort((a, b) => a - b).forEach((date, index) => {
                 const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                 html += `<div>
-                    <input type="checkbox" id="chef_date_${index}" value="${index}">
+                    <input type="checkbox" id="chef_date_${index}" value="${index}" onchange="updateEventsTotal()">
                     <label for="chef_date_${index}">${dateStr}</label>
                 </div>`;
             });
@@ -1202,7 +1373,7 @@
             eventDates.sort((a, b) => a - b).forEach((date, index) => {
                 const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                 html += `<div>
-                    <input type="checkbox" id="coat_date_${index}" value="${index}">
+                    <input type="checkbox" id="coat_date_${index}" value="${index}" onchange="updateEventsTotal()">
                     <label for="coat_date_${index}">${dateStr}</label>
                 </div>`;
             });
@@ -1216,8 +1387,8 @@
             
             if (!checkIn || !checkOut) return;
             
-            const checkInDate = new Date(checkIn);
-            const checkOutDate = new Date(checkOut);
+            const checkInDate = parseLocalDate(checkIn);
+            const checkOutDate = parseLocalDate(checkOut);
             const dates = getDatesBetween(checkInDate, checkOutDate);
             
             let totalCost = 0;
@@ -1272,8 +1443,8 @@
                 let dateHTML = `<div class="quote-day"><strong>${dateStr}</strong><br>`;
                 
                 Object.keys(selectedSpaces).forEach(spaceKey => {
-                    if (selectedSpaces[spaceKey].dateIndex === dateIndex) {
-                        const space = selectedSpaces[spaceKey];
+                    const space = selectedSpaces[spaceKey];
+                    if (space.dateIndex === dateIndex) {
                         const headcountInput = document.querySelector(`#headcount_${space.venueName.replace(/\s+/g, '_')}_${dateIndex} input`);
                         const headcount = headcountInput ? parseInt(headcountInput.value) || 0 : 0;
                         
@@ -1294,7 +1465,7 @@
                 });
                 
                 // Add daily services for this date
-                if (document.getElementById('chefAttendant').checked) {
+                if (document.getElementById('chefAttendant')?.checked) {
                     const chefCheckboxes = document.querySelectorAll('[id^="chef_date_"]:checked');
                     chefCheckboxes.forEach(cb => {
                         const checkboxDateIndex = parseInt(cb.value);
@@ -1305,7 +1476,7 @@
                     });
                 }
                 
-                if (document.getElementById('coatCheckAttendant').checked) {
+                if (document.getElementById('coatCheckAttendant')?.checked) {
                     const coatCheckboxes = document.querySelectorAll('[id^="coat_date_"]:checked');
                     coatCheckboxes.forEach(cb => {
                         const checkboxDateIndex = parseInt(cb.value);
@@ -1337,14 +1508,14 @@
             ];
             
             addons.forEach(addon => {
-                if (document.getElementById(addon.id).checked) {
+                if (document.getElementById(addon.id)?.checked) {
                     addonHTML += `${addon.name}: $${addon.price}<br>`;
                     addonCost += addon.price;
                 }
             });
             
             // AV Technician
-            if (document.getElementById('avTechnician').checked) {
+            if (document.getElementById('avTechnician')?.checked) {
                 const hours = parseInt(document.getElementById('avTechHours').value) || 0;
                 const cost = hours * 150;
                 addonHTML += `AV Technician (${hours} hours): $${cost.toLocaleString()}<br>`;
@@ -1371,13 +1542,17 @@
             document.getElementById('quoteDisplay').classList.remove('hidden');
         }
 
-        // Email generation (placeholder functions)
+        // Email generation functions
         function generateRoomsEmail() {
-            alert('Email template will be implemented with your specific template!');
+            alert('Rooms email template will be implemented with your specific template!');
         }
 
         function generateEventsEmail() {
-            alert('Email template will be implemented with your specific template!');
+            alert('Events email template will be implemented with your specific template!');
+        }
+
+        function generateComboEmail() {
+            alert('Combined rooms + events email template will be implemented with your specific template!');
         }
     </script>
 </body>
