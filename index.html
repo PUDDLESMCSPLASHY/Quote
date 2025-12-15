@@ -124,6 +124,7 @@
             padding: 2rem;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(15, 22, 42, 0.1);
+            position: relative;
         }
 
         .section h2 {
@@ -132,6 +133,14 @@
             font-size: 1.5rem;
             border-bottom: 2px solid var(--primary-sage);
             padding-bottom: 0.5rem;
+        }
+
+        .section-controls {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            gap: 0.5rem;
         }
 
         .form-group {
@@ -206,6 +215,15 @@
         .btn-small {
             padding: 0.5rem 1rem;
             font-size: 0.9rem;
+        }
+
+        .btn-clear {
+            background: var(--secondary-coral);
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: var(--secondary-deep-red);
         }
 
         .service-type-buttons {
@@ -303,6 +321,22 @@
             display: block;
         }
 
+        .event-date-section {
+            background: var(--secondary-cream);
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--primary-sage);
+        }
+
+        .event-date-section h3 {
+            color: var(--primary-forest);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--primary-sage);
+            padding-bottom: 0.5rem;
+        }
+
         .addons-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -367,6 +401,10 @@
         }
 
         .hidden {
+            display: none !important;
+        }
+
+        .collapsed {
             display: none !important;
         }
 
@@ -474,106 +512,115 @@
 
         <!-- Rooms Section -->
         <div id="roomsSection" class="section hidden">
+            <div class="section-controls">
+                <button class="btn btn-clear btn-small" onclick="clearRoomsSection()">Clear Section</button>
+                <button class="btn btn-secondary btn-small" onclick="toggleRoomsSection()">Collapse</button>
+            </div>
             <h2>Room Block Details</h2>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="checkInDate">Check-in Date</label>
-                    <input type="date" id="checkInDate" onchange="updateRoomDates()">
+            <div id="roomsSectionContent">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="checkInDate">Check-in Date</label>
+                        <input type="date" id="checkInDate" onchange="updateRoomDates()">
+                    </div>
+                    <div class="form-group">
+                        <label for="checkOutDate">Check-out Date</label>
+                        <input type="date" id="checkOutDate" onchange="updateRoomDates()">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="checkOutDate">Check-out Date</label>
-                    <input type="date" id="checkOutDate" onchange="updateRoomDates()">
+                <button class="btn btn-primary" onclick="generateRoomTable()">Add Rooms</button>
+                
+                <div id="businessPatternAlert" class="alert alert-warning hidden">
+                    ⚠️ <strong>Business Pattern Alert:</strong> This date pattern may impact occupancy efficiency.
                 </div>
-            </div>
-            <button class="btn btn-primary" onclick="generateRoomTable()">Add Rooms</button>
-            
-            <div id="businessPatternAlert" class="alert alert-warning hidden">
-                ⚠️ <strong>Business Pattern Alert:</strong> This date pattern may impact occupancy efficiency.
-            </div>
-            
-            <div id="roomTableContainer"></div>
-            
-            <div id="roomsActions" class="hidden">
-                <button class="btn btn-secondary" onclick="viewRoomsQuote()">View Quote</button>
-                <button class="btn btn-primary" onclick="generateRoomsEmail()">Generate Email</button>
+                
+                <div id="roomTableContainer"></div>
+                
+                <div id="roomsActions" class="hidden">
+                    <button class="btn btn-secondary" onclick="viewRoomsQuote()">View Quote</button>
+                    <button class="btn btn-primary" onclick="generateRoomsEmail()">Generate Email</button>
+                </div>
             </div>
         </div>
 
         <!-- Events Section -->
         <div id="eventsSection" class="section hidden">
+            <div class="section-controls">
+                <button class="btn btn-clear btn-small" onclick="clearEventsSection()">Clear Section</button>
+                <button class="btn btn-secondary btn-small" onclick="toggleEventsSection()">Collapse</button>
+            </div>
             <h2>Event Details</h2>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="eventDate">Event Date</label>
-                    <input type="date" id="eventDate">
-                    <button class="btn btn-secondary btn-small" onclick="addEventDate()">Add Date</button>
-                </div>
-            </div>
-            
-            <div id="consecutiveButtonContainer"></div>
-            <div id="eventDatesList" class="date-list hidden"></div>
-            
-            <div id="eventSpacesSection" class="hidden">
-                <h3>Select Event Spaces</h3>
-                <div id="eventSpacesGrid" class="space-selection"></div>
-            </div>
-            
-            <div id="eventAddonsSection" class="section hidden">
-                <h2>Event Add-ons (Optional)</h2>
-                <div class="addons-grid">
-                    <div class="addon-item">
-                        <input type="checkbox" id="projector" value="350">
-                        <label for="projector">Projector - $350</label>
-                    </div>
-                    <div class="addon-item">
-                        <input type="checkbox" id="screen" value="150">
-                        <label for="screen">Screen - $150</label>
-                    </div>
-                    <div class="addon-item">
-                        <input type="checkbox" id="speakerSystem" value="150">
-                        <label for="speakerSystem">Speaker System - $150</label>
-                    </div>
-                    <div class="addon-item">
-                        <input type="checkbox" id="monitor75" value="300">
-                        <label for="monitor75">75" Portable Monitor - $300</label>
-                    </div>
-                    <div class="addon-item">
-                        <input type="checkbox" id="handheldMic" value="75">
-                        <label for="handheldMic">Handheld Microphone - $75</label>
-                    </div>
-                    <div class="addon-item">
-                        <input type="checkbox" id="lavalierMic" value="75">
-                        <label for="lavalierMic">Lavalier Microphone - $75</label>
-                    </div>
-                    <div class="addon-item">
-                        <input type="checkbox" id="podium" value="50">
-                        <label for="podium">Podium - $50</label>
-                    </div>
-                    <div class="addon-item">
-                        <input type="checkbox" id="executiveBlotter" value="25">
-                        <label for="executiveBlotter">Executive Blotter - $25</label>
-                    </div>
-                    <div class="addon-item special">
-                        <input type="checkbox" id="avTechnician" value="150" onchange="toggleAVTechHours()">
-                        <label for="avTechnician">AV Technician - $150/hr</label>
-                        <input type="number" id="avTechHours" min="1" placeholder="Hours" style="width: 80px; margin-left: 10px;" class="hidden">
-                    </div>
-                    <div class="addon-item special">
-                        <input type="checkbox" id="chefAttendant" value="250" onchange="toggleChefDates()">
-                        <label for="chefAttendant">Chef Attendant - $250</label>
-                        <div id="chefDatesContainer" class="checkbox-grid hidden"></div>
-                    </div>
-                    <div class="addon-item special">
-                        <input type="checkbox" id="coatCheckAttendant" value="175" onchange="toggleCoatCheckDates()">
-                        <label for="coatCheckAttendant">Coat Check Attendant - $175</label>
-                        <div id="coatCheckDatesContainer" class="checkbox-grid hidden"></div>
+            <div id="eventsSectionContent">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventDate">Event Date</label>
+                        <input type="date" id="eventDate">
+                        <button class="btn btn-secondary btn-small" onclick="addEventDate()">Add Date</button>
                     </div>
                 </div>
-            </div>
-            
-            <div id="eventsActions" class="hidden">
-                <button class="btn btn-secondary" onclick="viewEventsQuote()">View Quote</button>
-                <button class="btn btn-primary" onclick="generateEventsEmail()">Generate Email</button>
+                
+                <div id="consecutiveButtonContainer"></div>
+                <div id="eventDatesList" class="date-list hidden"></div>
+                
+                <div id="eventDatesContainer"></div>
+                
+                <div id="eventAddonsSection" class="section hidden">
+                    <h2>Event Add-ons (Optional)</h2>
+                    <div class="addons-grid">
+                        <div class="addon-item">
+                            <input type="checkbox" id="projector" value="350">
+                            <label for="projector">Projector - $350</label>
+                        </div>
+                        <div class="addon-item">
+                            <input type="checkbox" id="screen" value="150">
+                            <label for="screen">Screen - $150</label>
+                        </div>
+                        <div class="addon-item">
+                            <input type="checkbox" id="speakerSystem" value="150">
+                            <label for="speakerSystem">Speaker System - $150</label>
+                        </div>
+                        <div class="addon-item">
+                            <input type="checkbox" id="monitor75" value="300">
+                            <label for="monitor75">75" Portable Monitor - $300</label>
+                        </div>
+                        <div class="addon-item">
+                            <input type="checkbox" id="handheldMic" value="75">
+                            <label for="handheldMic">Handheld Microphone - $75</label>
+                        </div>
+                        <div class="addon-item">
+                            <input type="checkbox" id="lavalierMic" value="75">
+                            <label for="lavalierMic">Lavalier Microphone - $75</label>
+                        </div>
+                        <div class="addon-item">
+                            <input type="checkbox" id="podium" value="50">
+                            <label for="podium">Podium - $50</label>
+                        </div>
+                        <div class="addon-item">
+                            <input type="checkbox" id="executiveBlotter" value="25">
+                            <label for="executiveBlotter">Executive Blotter - $25</label>
+                        </div>
+                        <div class="addon-item special">
+                            <input type="checkbox" id="avTechnician" value="150" onchange="toggleAVTechHours()">
+                            <label for="avTechnician">AV Technician - $150/hr</label>
+                            <input type="number" id="avTechHours" min="1" placeholder="Hours" style="width: 80px; margin-left: 10px;" class="hidden">
+                        </div>
+                        <div class="addon-item special">
+                            <input type="checkbox" id="chefAttendant" value="250" onchange="toggleChefDates()">
+                            <label for="chefAttendant">Chef Attendant - $250</label>
+                            <div id="chefDatesContainer" class="checkbox-grid hidden"></div>
+                        </div>
+                        <div class="addon-item special">
+                            <input type="checkbox" id="coatCheckAttendant" value="175" onchange="toggleCoatCheckDates()">
+                            <label for="coatCheckAttendant">Coat Check Attendant - $175</label>
+                            <div id="coatCheckDatesContainer" class="checkbox-grid hidden"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="eventsActions" class="hidden">
+                    <button class="btn btn-secondary" onclick="viewEventsQuote()">View Quote</button>
+                    <button class="btn btn-primary" onclick="generateEventsEmail()">Generate Email</button>
+                </div>
             </div>
         </div>
 
@@ -631,6 +678,60 @@
         let eventDates = [];
         let selectedSpaces = {};
 
+        // Section management functions
+        function clearRoomsSection() {
+            document.getElementById('checkInDate').value = '';
+            document.getElementById('checkOutDate').value = '';
+            document.getElementById('roomTableContainer').innerHTML = '';
+            document.getElementById('businessPatternAlert').classList.add('hidden');
+            document.getElementById('roomsActions').classList.add('hidden');
+            document.getElementById('quoteDisplay').classList.add('hidden');
+        }
+
+        function clearEventsSection() {
+            eventDates = [];
+            selectedSpaces = {};
+            document.getElementById('eventDate').value = '';
+            document.getElementById('consecutiveButtonContainer').innerHTML = '';
+            document.getElementById('eventDatesList').classList.add('hidden');
+            document.getElementById('eventDatesContainer').innerHTML = '';
+            document.getElementById('eventAddonsSection').classList.add('hidden');
+            document.getElementById('eventsActions').classList.add('hidden');
+            document.getElementById('quoteDisplay').classList.add('hidden');
+            
+            // Clear all addon checkboxes
+            document.querySelectorAll('#eventAddonsSection input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('avTechHours').classList.add('hidden');
+            document.getElementById('chefDatesContainer').classList.add('hidden');
+            document.getElementById('coatCheckDatesContainer').classList.add('hidden');
+        }
+
+        function toggleRoomsSection() {
+            const content = document.getElementById('roomsSectionContent');
+            const btn = event.target;
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                btn.textContent = 'Collapse';
+            } else {
+                content.classList.add('collapsed');
+                btn.textContent = 'Expand';
+            }
+        }
+
+        function toggleEventsSection() {
+            const content = document.getElementById('eventsSectionContent');
+            const btn = event.target;
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                btn.textContent = 'Collapse';
+            } else {
+                content.classList.add('collapsed');
+                btn.textContent = 'Expand';
+            }
+        }
+
         // Service type selection
         function selectServiceType(type) {
             currentServiceType = type;
@@ -669,6 +770,7 @@
             const dates = [];
             const currentDate = new Date(startDate);
             
+            // Fixed: Now correctly shows nights stayed (start date to end date - 1)
             while (currentDate < endDate) {
                 dates.push(new Date(currentDate));
                 currentDate.setDate(currentDate.getDate() + 1);
@@ -844,8 +946,9 @@
                 eventDates.push(eventDate);
                 updateEventDatesDisplay();
                 updateConsecutiveButton();
-                showEventSpaces();
+                generateEventDateSections();
                 showEventAddons();
+                showEventActions();
             }
             
             dateInput.value = '';
@@ -876,7 +979,7 @@
                 eventDates.push(nextDate);
                 updateEventDatesDisplay();
                 updateConsecutiveButton();
-                showEventSpaces();
+                generateEventDateSections();
             }
         }
 
@@ -913,22 +1016,123 @@
             eventDates.splice(index, 1);
             updateEventDatesDisplay();
             updateConsecutiveButton();
-            showEventSpaces();
+            generateEventDateSections();
             
             if (eventDates.length === 0) {
                 document.getElementById('eventAddonsSection').classList.add('hidden');
                 document.getElementById('eventsActions').classList.add('hidden');
+                document.getElementById('eventDatesContainer').innerHTML = '';
             }
         }
 
-        function showEventSpaces() {
-            if (eventDates.length > 0) {
-                document.getElementById('eventSpacesSection').classList.remove('hidden');
-                generateEventSpacesGrid();
-                document.getElementById('eventsActions').classList.remove('hidden');
+        function generateEventDateSections() {
+            const container = document.getElementById('eventDatesContainer');
+            
+            if (eventDates.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            container.innerHTML = '';
+            const sortedDates = [...eventDates].sort((a, b) => a - b);
+            
+            sortedDates.forEach((date, dateIndex) => {
+                const dateStr = date.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'event-date-section';
+                sectionDiv.innerHTML = `
+                    <h3>${dateStr}</h3>
+                    <div class="space-selection" id="spaces_date_${dateIndex}"></div>
+                `;
+                
+                container.appendChild(sectionDiv);
+                
+                // Generate spaces for this date
+                generateSpacesForDate(date, dateIndex);
+            });
+        }
+
+        function generateSpacesForDate(date, dateIndex) {
+            const container = document.getElementById(`spaces_date_${dateIndex}`);
+            let html = '';
+            
+            // Add event spaces
+            Object.keys(venues).forEach(venueName => {
+                const pricing = getVenuePricing(venueName, date);
+                
+                html += `<div class="space-card" onclick="toggleSpaceSelection('${venueName}', ${dateIndex})">
+                    <h3>${venueName}</h3>
+                    <div class="space-rates">
+                        Room Rental: $${pricing.roomRental.toLocaleString()}<br>
+                        F&B Minimum: $${pricing.fnbMinimum.toLocaleString()}
+                    </div>
+                    <div class="headcount-input" id="headcount_${venueName.replace(/\s+/g, '_')}_${dateIndex}">
+                        <label>Headcount:</label>
+                        <input type="number" min="1" placeholder="Enter headcount">
+                    </div>
+                </div>`;
+            });
+            
+            // Add F&B outlets
+            Object.keys(fnbOutlets).forEach(venueName => {
+                const samplePricing = getVenuePricing(venueName, date, false);
+                const businessPricing = getVenuePricing(venueName, date, true);
+                
+                html += `<div class="space-card" onclick="toggleSpaceSelection('${venueName}', ${dateIndex})">
+                    <h3>${venueName}</h3>
+                    <div class="space-rates">
+                        Non-Business: $${samplePricing.fnbMinimum.toLocaleString()}<br>
+                        Business: $${businessPricing.fnbMinimum.toLocaleString()}
+                        <button class="btn btn-small business-hours-toggle" onclick="event.stopPropagation(); toggleBusinessHours('${venueName}', ${dateIndex})">
+                            <span id="toggle_${venueName.replace(/\s+/g, '_')}_${dateIndex}">Non-Business</span>
+                        </button>
+                    </div>
+                    <div class="headcount-input" id="headcount_${venueName.replace(/\s+/g, '_')}_${dateIndex}">
+                        <label>Headcount:</label>
+                        <input type="number" min="1" placeholder="Enter headcount">
+                    </div>
+                </div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function toggleSpaceSelection(venueName, dateIndex) {
+            const card = event.currentTarget;
+            const headcountDiv = document.getElementById(`headcount_${venueName.replace(/\s+/g, '_')}_${dateIndex}`);
+            const spaceKey = `${venueName}_${dateIndex}`;
+            
+            if (card.classList.contains('selected')) {
+                card.classList.remove('selected');
+                headcountDiv.classList.remove('show');
+                delete selectedSpaces[spaceKey];
             } else {
-                document.getElementById('eventSpacesSection').classList.add('hidden');
-                document.getElementById('eventsActions').classList.add('hidden');
+                card.classList.add('selected');
+                headcountDiv.classList.add('show');
+                selectedSpaces[spaceKey] = {
+                    venueName: venueName,
+                    dateIndex: dateIndex,
+                    date: eventDates.find((d, i) => i === dateIndex),
+                    isBusinessHours: false,
+                    headcount: 0
+                };
+            }
+        }
+
+        function toggleBusinessHours(venueName, dateIndex) {
+            const toggleBtn = document.getElementById(`toggle_${venueName.replace(/\s+/g, '_')}_${dateIndex}`);
+            const isCurrentlyBusiness = toggleBtn.textContent === 'Business';
+            const spaceKey = `${venueName}_${dateIndex}`;
+            
+            if (selectedSpaces[spaceKey]) {
+                selectedSpaces[spaceKey].isBusinessHours = !isCurrentlyBusiness;
+                toggleBtn.textContent = isCurrentlyBusiness ? 'Non-Business' : 'Business';
             }
         }
 
@@ -939,77 +1143,9 @@
             }
         }
 
-        function generateEventSpacesGrid() {
-            const container = document.getElementById('eventSpacesGrid');
-            let html = '';
-            
-            // Add event spaces
-            Object.keys(venues).forEach(venueName => {
-                const sampleDate = eventDates[0];
-                const pricing = getVenuePricing(venueName, sampleDate);
-                
-                html += `<div class="space-card" onclick="toggleSpaceSelection('${venueName}')">
-                    <h3>${venueName}</h3>
-                    <div class="space-rates">
-                        Room Rental: $${pricing.roomRental.toLocaleString()}<br>
-                        F&B Minimum: $${pricing.fnbMinimum.toLocaleString()}
-                    </div>
-                    <div class="headcount-input" id="headcount_${venueName.replace(/\s+/g, '_')}">
-                        <label>Headcount:</label>
-                        <input type="number" min="1" placeholder="Enter headcount">
-                    </div>
-                </div>`;
-            });
-            
-            // Add F&B outlets
-            Object.keys(fnbOutlets).forEach(venueName => {
-                const samplePricing = getVenuePricing(venueName, eventDates[0], false);
-                const businessPricing = getVenuePricing(venueName, eventDates[0], true);
-                
-                html += `<div class="space-card" onclick="toggleSpaceSelection('${venueName}')">
-                    <h3>${venueName}</h3>
-                    <div class="space-rates">
-                        Non-Business: $${samplePricing.fnbMinimum.toLocaleString()}<br>
-                        Business: $${businessPricing.fnbMinimum.toLocaleString()}
-                        <button class="btn btn-small business-hours-toggle" onclick="event.stopPropagation(); toggleBusinessHours('${venueName}')">
-                            <span id="toggle_${venueName.replace(/\s+/g, '_')}">Non-Business</span>
-                        </button>
-                    </div>
-                    <div class="headcount-input" id="headcount_${venueName.replace(/\s+/g, '_')}">
-                        <label>Headcount:</label>
-                        <input type="number" min="1" placeholder="Enter headcount">
-                    </div>
-                </div>`;
-            });
-            
-            container.innerHTML = html;
-        }
-
-        function toggleSpaceSelection(venueName) {
-            const card = event.currentTarget;
-            const headcountDiv = document.getElementById(`headcount_${venueName.replace(/\s+/g, '_')}`);
-            
-            if (card.classList.contains('selected')) {
-                card.classList.remove('selected');
-                headcountDiv.classList.remove('show');
-                delete selectedSpaces[venueName];
-            } else {
-                card.classList.add('selected');
-                headcountDiv.classList.add('show');
-                selectedSpaces[venueName] = {
-                    isBusinessHours: false,
-                    headcount: 0
-                };
-            }
-        }
-
-        function toggleBusinessHours(venueName) {
-            const toggleBtn = document.getElementById(`toggle_${venueName.replace(/\s+/g, '_')}`);
-            const isCurrentlyBusiness = toggleBtn.textContent === 'Business';
-            
-            if (selectedSpaces[venueName]) {
-                selectedSpaces[venueName].isBusinessHours = !isCurrentlyBusiness;
-                toggleBtn.textContent = isCurrentlyBusiness ? 'Non-Business' : 'Business';
+        function showEventActions() {
+            if (eventDates.length > 0) {
+                document.getElementById('eventsActions').classList.remove('hidden');
             }
         }
 
@@ -1107,15 +1243,7 @@
                 totalCost += dailyCost;
             });
             
-            // Check for multi-day discount
-            if (dates.length >= 3) {
-                const discount = totalCost * 0.25;
-                quoteHTML += `<div class="quote-day">
-                    <strong style="color: var(--secondary-burgundy);">Multi-Day Discount (25%): -$${discount.toLocaleString()}</strong>
-                </div>`;
-                totalCost -= discount;
-            }
-            
+            // NO multi-day discount for room blocks!
             quoteHTML += `<div class="quote-total">Total: $${totalCost.toLocaleString()}</div>`;
             
             document.getElementById('quoteDisplay').innerHTML = quoteHTML;
@@ -1132,7 +1260,7 @@
             const sortedDates = [...eventDates].sort((a, b) => a - b);
             
             // Calculate costs per date
-            sortedDates.forEach(date => {
+            sortedDates.forEach((date, dateIndex) => {
                 const dateStr = date.toLocaleDateString('en-US', { 
                     weekday: 'long', 
                     month: 'long', 
@@ -1143,23 +1271,25 @@
                 let dateCost = 0;
                 let dateHTML = `<div class="quote-day"><strong>${dateStr}</strong><br>`;
                 
-                Object.keys(selectedSpaces).forEach(venueName => {
-                    const space = selectedSpaces[venueName];
-                    const headcountInput = document.querySelector(`#headcount_${venueName.replace(/\s+/g, '_')} input`);
-                    const headcount = headcountInput ? parseInt(headcountInput.value) || 0 : 0;
-                    
-                    if (headcount > 0) {
-                        const pricing = getVenuePricing(venueName, date, space.isBusinessHours);
-                        const spaceCost = pricing.roomRental + pricing.fnbMinimum;
-                        const pricePerHead = headcount > 0 ? (pricing.fnbMinimum / headcount).toFixed(2) : 0;
+                Object.keys(selectedSpaces).forEach(spaceKey => {
+                    if (selectedSpaces[spaceKey].dateIndex === dateIndex) {
+                        const space = selectedSpaces[spaceKey];
+                        const headcountInput = document.querySelector(`#headcount_${space.venueName.replace(/\s+/g, '_')}_${dateIndex} input`);
+                        const headcount = headcountInput ? parseInt(headcountInput.value) || 0 : 0;
                         
-                        dateHTML += `${venueName}: $${pricing.roomRental.toLocaleString()} room`;
-                        if (pricing.fnbMinimum > 0) {
-                            dateHTML += ` + $${pricing.fnbMinimum.toLocaleString()} F&B (${headcount} people = $${pricePerHead}/head)`;
+                        if (headcount > 0) {
+                            const pricing = getVenuePricing(space.venueName, date, space.isBusinessHours);
+                            const spaceCost = pricing.roomRental + pricing.fnbMinimum;
+                            const pricePerHead = headcount > 0 ? (pricing.fnbMinimum / headcount).toFixed(2) : 0;
+                            
+                            dateHTML += `${space.venueName}: $${pricing.roomRental.toLocaleString()} room`;
+                            if (pricing.fnbMinimum > 0) {
+                                dateHTML += ` + $${pricing.fnbMinimum.toLocaleString()} F&B (${headcount} people = $${pricePerHead}/head)`;
+                            }
+                            dateHTML += ` = $${spaceCost.toLocaleString()}<br>`;
+                            
+                            dateCost += spaceCost;
                         }
-                        dateHTML += ` = $${spaceCost.toLocaleString()}<br>`;
-                        
-                        dateCost += spaceCost;
                     }
                 });
                 
@@ -1167,8 +1297,8 @@
                 if (document.getElementById('chefAttendant').checked) {
                     const chefCheckboxes = document.querySelectorAll('[id^="chef_date_"]:checked');
                     chefCheckboxes.forEach(cb => {
-                        const dateIndex = parseInt(cb.value);
-                        if (sortedDates[dateIndex].getTime() === date.getTime()) {
+                        const checkboxDateIndex = parseInt(cb.value);
+                        if (checkboxDateIndex === dateIndex) {
                             dateHTML += `Chef Attendant: $250<br>`;
                             dateCost += 250;
                         }
@@ -1178,8 +1308,8 @@
                 if (document.getElementById('coatCheckAttendant').checked) {
                     const coatCheckboxes = document.querySelectorAll('[id^="coat_date_"]:checked');
                     coatCheckboxes.forEach(cb => {
-                        const dateIndex = parseInt(cb.value);
-                        if (sortedDates[dateIndex].getTime() === date.getTime()) {
+                        const checkboxDateIndex = parseInt(cb.value);
+                        if (checkboxDateIndex === dateIndex) {
                             dateHTML += `Coat Check Attendant: $175<br>`;
                             dateCost += 175;
                         }
@@ -1226,7 +1356,7 @@
                 totalCost += addonCost;
             }
             
-            // Multi-day discount
+            // Multi-day discount ONLY for events (3+ days)
             if (eventDates.length >= 3) {
                 const discount = totalCost * 0.25;
                 quoteHTML += `<div class="quote-day">
